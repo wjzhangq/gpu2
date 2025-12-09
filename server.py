@@ -6,6 +6,14 @@ from urllib.parse import urlparse, parse_qs
 
 data_store = {}  # {id: {"report": data, "timestamp": last_update}}
 
+HOSTNAME_MAP = {
+    "user-ThinkStation-PX": "user-ThinkStation-PX1",
+}
+
+MODEL_NAME_MAP = {
+    "NVIDIA RTX 5880 Ada Generation": "RTX 4080 Ada",
+}
+
 
 def cleanup():
     """Remove old data beyond 300 seconds (5 min)"""
@@ -139,6 +147,14 @@ class RequestHandler(BaseHTTPRequestHandler):
             for k, v in data_store.items():
                 item = v["report"].copy()
                 item["offline"] = (now - v["timestamp"] > 30)
+                if item["hostname"] in HOSTNAME_MAP:
+                    item['old_hostname'] = item["hostname"]
+                    item["hostname"] = HOSTNAME_MAP[item["hostname"]]
+                for index, gpu in enumerate(item.get("gpus", [])):
+                    print(gpu)
+                    if gpu.get("model") in MODEL_NAME_MAP:
+                        item["gpus"][index]['old_model'] = gpu["model"]
+                        item["gpus"][index]["model"] = MODEL_NAME_MAP[gpu["model"]]
                 result.append(item)
             return self._send(200, result)
 
