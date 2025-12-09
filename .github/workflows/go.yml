@@ -34,10 +34,10 @@ jobs:
       run: go mod tidy
        
     - name: Build win x64
-      run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o gpu2.exe gpu2.go
+      run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o gpu2.exe
 
     - name: Build linux x64
-      run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o gpu2 gpu2.go
+      run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o gpu2
 
     - name: Upload
       uses: softprops/action-gh-release@v1

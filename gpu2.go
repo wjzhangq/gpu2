@@ -387,8 +387,8 @@ func report(REPORT_URL string) {
 	_, _ = io.ReadAll(resp.Body) // 消费响应体
 }
 
-func main() {
-	interval := flag.Duration("interval", 5*time.Second, "collect interval")
+func main_func() {
+	interval := flag.Duration("interval", 2*time.Second, "collect interval")
 	customID := flag.String("id", "", "custom system ID (auto-generated if not provided)")
 	reportURL := flag.String("url", "https://gpu.zhangwenjin.com/report", "report URL")
 	flag.Parse()
@@ -432,5 +432,14 @@ func main() {
 
 		// 异步上报
 		go report(*reportURL)
+	}
+}
+
+func main() {
+	if runtime.GOOS == "windows" {
+		tryRunAsWindowsService()
+	} else {
+		fmt.Println("Running as normal program (Linux or non-service mode)")
+		main_func()
 	}
 }
